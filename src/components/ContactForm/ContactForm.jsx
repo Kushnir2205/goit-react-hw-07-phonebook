@@ -16,14 +16,6 @@ const ContactForm = () => {
     mapContact[target.name](target.value);
   };
 
-  // const handleChangeName = event => {
-  //   setName(event.target.value);
-  // };
-
-  // const handleChangeNumber = event => {
-  //   setNumber(event.target.value);
-  // };
-
   const handleSubmit = event => {
     event.preventDefault();
     const isExsist = contactSelect.find(
@@ -34,17 +26,10 @@ const ContactForm = () => {
       return;
     }
 
-    dispatch(addContactThunk({ name, number })).unwrap().then(console.log());
+    dispatch(addContactThunk({ name, number }));
     setName('');
     setNumber('');
-    // const contact = { name, number };
-    // dispatch(addContact(contact));
-    // resetForm();
   };
-  // const resetForm = () => {
-  //   setName('');
-  //   setNumber('');
-  // };
 
   return (
     <div className={styles.formContainer}>
@@ -56,7 +41,7 @@ const ContactForm = () => {
             id="name"
             type="text"
             name="name"
-            // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
             onChange={handleChange}
@@ -70,7 +55,7 @@ const ContactForm = () => {
             id="number"
             type="tel"
             name="number"
-            // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
             onChange={handleChange}

@@ -15,7 +15,6 @@ const contactSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(getContactsThunk.fulfilled, (state, { payload }) => {
-        console.log(payload);
         state.items = payload;
         state.isLoading = false;
         state.error = null;
@@ -53,18 +52,4 @@ const contactSlice = createSlice({
   },
 });
 
-const filteredSlice = createSlice({
-  name: 'filter',
-  initialState: {
-    filter: '',
-  },
-  reducers: {
-    setFilter(state, { payload }) {
-      state.filter = payload;
-    },
-  },
-});
-
-export const { setFilter } = filteredSlice.actions;
 export const contactReducer = contactSlice.reducer;
-export const filterSlice = filteredSlice.reducer;

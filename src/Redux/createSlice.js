@@ -1,38 +1,70 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import {
+  addContactThunk,
+  deleteContactThunk,
+  getContactsThunk,
+} from './thunks';
 
 const contactSlice = createSlice({
   name: 'contacts',
   initialState: {
-    items: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(getContactsThunk.fulfilled, (state, { payload }) => {
+        console.log(payload);
+        state.items = payload;
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(getContactsThunk.rejected, (state, { payload }) => {
+        state.error = payload;
+        state.isLoading = false;
+      })
+      .addCase(getContactsThunk.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(addContactThunk.fulfilled, (state, { payload }) => {
+        state.items = [...state.items, payload];
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(addContactThunk.rejected, (state, { payload }) => {
+        state.error = payload;
+        state.isLoading = false;
+      })
+      .addCase(addContactThunk.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(deleteContactThunk.fulfilled, (state, { payload }) => {
+        state.items = state.items.filter(contact => contact.id !== payload);
+        state.isLoading = false;
+      })
+      .addCase(deleteContactThunk.rejected, (state, { payload }) => {
+        state.error = payload;
+        state.isLoading = false;
+      })
+      .addCase(deleteContactThunk.pending, state => {
+        state.isLoading = true;
+      });
+  },
+});
+
+const filteredSlice = createSlice({
+  name: 'filter',
+  initialState: {
     filter: '',
   },
   reducers: {
-    addContact: {
-      reducer(state, { payload }) {
-        state.items.push(payload);
-      },
-      prepare(contact) {
-        return {
-          payload: {
-            id: nanoid(),
-            ...contact,
-          },
-        };
-      },
-    },
-    deleteContact(state, { payload }) {
-      state.items = state.items.filter(item => item.id !== payload);
-    },
     setFilter(state, { payload }) {
       state.filter = payload;
     },
   },
 });
 
-export const { addContact, deleteContact, setFilter } = contactSlice.actions;
+export const { setFilter } = filteredSlice.actions;
 export const contactReducer = contactSlice.reducer;
+export const filterSlice = filteredSlice.reducer;

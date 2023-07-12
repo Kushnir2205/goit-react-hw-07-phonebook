@@ -1,21 +1,29 @@
 import { useState } from 'react';
 import styles from './ContactForm.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'Redux/createSlice';
+
 import { selectContacts } from 'Redux/selector';
+import { addContactThunk } from 'Redux/thunks';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
   const contactSelect = useSelector(selectContacts);
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const mapContact = { name: setName, number: setNumber };
 
-  const handleChangeName = event => {
-    setName(event.target.value);
+  const handleChange = ({ target }) => {
+    mapContact[target.name](target.value);
   };
-  const handleChangeNumber = event => {
-    setNumber(event.target.value);
-  };
+
+  // const handleChangeName = event => {
+  //   setName(event.target.value);
+  // };
+
+  // const handleChangeNumber = event => {
+  //   setNumber(event.target.value);
+  // };
+
   const handleSubmit = event => {
     event.preventDefault();
     const isExsist = contactSelect.find(
@@ -25,14 +33,18 @@ const ContactForm = () => {
       alert('Name already exsist!');
       return;
     }
-    const contact = { name, number };
-    dispatch(addContact(contact));
-    resetForm();
-  };
-  const resetForm = () => {
+
+    dispatch(addContactThunk({ name, number })).unwrap().then(console.log());
     setName('');
     setNumber('');
+    // const contact = { name, number };
+    // dispatch(addContact(contact));
+    // resetForm();
   };
+  // const resetForm = () => {
+  //   setName('');
+  //   setNumber('');
+  // };
 
   return (
     <div className={styles.formContainer}>
@@ -44,10 +56,10 @@ const ContactForm = () => {
             id="name"
             type="text"
             name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
-            onChange={handleChangeName}
+            onChange={handleChange}
             value={name}
           />
         </label>
@@ -58,10 +70,10 @@ const ContactForm = () => {
             id="number"
             type="tel"
             name="number"
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
-            onChange={handleChangeNumber}
+            onChange={handleChange}
             value={number}
           />
         </label>
